@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+
+  # first service, the mongodb database
+  database:
+    
+    container_name: mongodb_database
+    
+    # specify image from DockerHub
+    image: mongo:latest
+    #-- or use this if there is a dockerfile to build the image
+    #build:
+    #  context: ./db
+    #  dockerfile: Dockerfile
+
+    # volumes:
+    #  - ./db/data:/data/db
+
+    # map port of localhost to container port
+    ports:
+      - '27017:27017'
+
+  # second service, the streamlit-python app
+  streamlit:
+    container_name: streamlit_app
+
+    # use existing dockerfile to build base image
+    build:
+      context: /app
+      dockerfile: Dockerfile
+    
+    # map port of localhost to container port
+    ports:
+      - '8501:8501'
+    
+    # define environment variables
+    environment:
+      - MONGO_URL='mongodb://database:27017'
+
+    # specify to wait for database service to be ready before building streamlit service
+    depends_on:
+      - database
