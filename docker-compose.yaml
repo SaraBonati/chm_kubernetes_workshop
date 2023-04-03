@@ -27,7 +27,7 @@ services:
 
     # use existing dockerfile to build base image
     build:
-      context: /app
+      context: ./app
       dockerfile: Dockerfile
     
     # map port of localhost to container port
@@ -36,7 +36,10 @@ services:
     
     # define environment variables
     environment:
-      - MONGO_URL='mongodb://database:27017'
+      - MONGO_URL=mongodb://database:27017
+
+    volumes:
+      - ./app:/app/app
 
     # specify to wait for database service to be ready before building streamlit service
     depends_on:
